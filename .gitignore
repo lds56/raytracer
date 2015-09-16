@@ -26,3 +26,28 @@
 *.exe
 *.out
 *.app
+
+# JetBrains IDE
+.idea/
+*.iml
+
+# emacs auto-saving files
+\#*#
+.#*#
+.#*
+
+# makefile temp files
+CMakeCache.txt
+install_manifest.txt
+CMakeFiles/
+
+# test directory
+test/
+
+# binary directory
+bin/
+
+# resource directory
+resource/
+
+raytracer
