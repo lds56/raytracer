@@ -6,10 +6,8 @@
 #define PARSE_H
 
 #include <stdio.h>
-#include <definition.h>
+#include "Definition.h"
 #include <Scene.h>
-
-typedef enum {false=0,true=1} bool;
 
 bool viParseArgs(int argc, char *argv[], char **filename);
 bool viParseFile(FILE *f, ScenePtr scenePtr);

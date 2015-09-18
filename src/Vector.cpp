@@ -6,7 +6,7 @@
 #include <math.h>
 #include "Vector.h"
 
-inline Vector2d Vector2d::operator =(const Vector2d &vector) {
+Vector2d Vector2d::operator =(const Vector2d &vector) {
     if (this == &vector) {
         return *this;
     }
@@ -18,17 +18,17 @@ inline Vector2d Vector2d::operator =(const Vector2d &vector) {
 }
 
 
-inline Vector2d Vector2d::operator +(const Vector2d &vector) const {
+Vector2d Vector2d::operator +(const Vector2d &vector) const {
     return Vector2d(x + vector.x, y + vector.y);
 }
 
 
-inline Vector2d Vector2d::operator -(const Vector2d &vector) const {
+Vector2d Vector2d::operator -(const Vector2d &vector) const {
     return Vector2d(x - vector.x, y - vector.y);
 }
 
 
-inline Vector2d Vector2d::operator +=(const Vector2d &vector) {
+Vector2d Vector2d::operator +=(const Vector2d &vector) {
     x += vector.x;
     y += vector.y;
 
@@ -36,7 +36,7 @@ inline Vector2d Vector2d::operator +=(const Vector2d &vector) {
 }
 
 
-inline Vector2d Vector2d::operator -=(const Vector2d &vector) {
+Vector2d Vector2d::operator -=(const Vector2d &vector) {
     x -= vector.x;
     y -= vector.y;
 
@@ -44,18 +44,18 @@ inline Vector2d Vector2d::operator -=(const Vector2d &vector) {
 }
 
 
-inline Vector2d Vector2d::operator *(const float scalar) const {
+Vector2d Vector2d::operator *(const float scalar) const {
     return Vector2d(x * scalar, y * scalar);
 }
 
 
-inline Vector2d Vector2d::operator /(const float scalar) const {
+Vector2d Vector2d::operator /(const float scalar) const {
     float invScalar = 1.0f / scalar;
     return Vector2d(x * invScalar, y * invScalar);
 }
 
 
-inline Vector2d Vector2d::operator *=(const float scalar) {
+Vector2d Vector2d::operator *=(const float scalar) {
     x *= scalar;
     y *= scalar;
 
@@ -63,7 +63,7 @@ inline Vector2d Vector2d::operator *=(const float scalar) {
 }
 
 
-inline Vector2d Vector2d::operator /=(const float scalar) {
+Vector2d Vector2d::operator /=(const float scalar) {
     float invScalar = 1.0f / scalar;
     x *= scalar;
     y *= scalar;
@@ -72,17 +72,17 @@ inline Vector2d Vector2d::operator /=(const float scalar) {
 }
 
 
-inline float Vector2d::length() const {
+float Vector2d::length() const {
     return sqrt(lengthSqr());
 }
 
 
-inline float Vector2d::lengthSqr() const {
+float Vector2d::lengthSqr() const {
     return x * x + y * y;
 }
 
 
-inline float Vector2d::normalize() {
+float Vector2d::normalize() {
     float len = length();
     *this /= len;
 
@@ -90,7 +90,7 @@ inline float Vector2d::normalize() {
 }
 
 
-inline Vector2d Vector2d::negate() {
+Vector2d Vector2d::negate() {
     x = -x;
     y = -y;
 
@@ -102,7 +102,7 @@ inline Vector2d Vector2d::negate() {
 /*----------2-3d------------*/
 
 
-inline Vector3d Vector3d::operator =(const Vector3d &vector) {
+Vector3d Vector3d::operator =(const Vector3d &vector) {
     if (this == &vector) {
         return *this;
     }
@@ -115,17 +115,17 @@ inline Vector3d Vector3d::operator =(const Vector3d &vector) {
 }
 
 
-inline Vector3d Vector3d::operator +(const Vector3d &vector) const {
+Vector3d Vector3d::operator +(const Vector3d &vector) const {
     return Vector3d(x + vector.x, y + vector.y, z + vector.z);
 }
 
 
-inline Vector3d Vector3d::operator -(const Vector3d &vector) const {
+Vector3d Vector3d::operator -(const Vector3d &vector) const {
     return Vector3d(x - vector.x, y - vector.y, z - vector.z);
 }
 
 
-inline Vector3d Vector3d::operator +=(const Vector3d &vector) {
+Vector3d Vector3d::operator +=(const Vector3d &vector) {
     x += vector.x;
     y += vector.y;
     z += vector.z;
@@ -134,7 +134,7 @@ inline Vector3d Vector3d::operator +=(const Vector3d &vector) {
 }
 
 
-inline Vector3d Vector3d::operator -=(const Vector3d &vector) {
+Vector3d Vector3d::operator -=(const Vector3d &vector) {
     x -= vector.x;
     y -= vector.y;
     z -= vector.z;
@@ -143,18 +143,18 @@ inline Vector3d Vector3d::operator -=(const Vector3d &vector) {
 }
 
 
-inline Vector3d Vector3d::operator *(const float scalar) const {
+Vector3d Vector3d::operator *(const float scalar) const {
     return Vector3d(x * scalar, y * scalar, z * scalar);
 }
 
 
-inline Vector3d Vector3d::operator /(const float scalar) const {
+Vector3d Vector3d::operator/(const float scalar) const {
     float invScalar = 1.0f / scalar;
     return Vector3d(x * invScalar, y * invScalar, z * invScalar);
 }
 
 
-inline Vector3d Vector3d::operator *=(const float scalar) {
+Vector3d Vector3d::operator *=(const float scalar) {
     x *= scalar;
     y *= scalar;
     z *= scalar;
@@ -163,7 +163,7 @@ inline Vector3d Vector3d::operator *=(const float scalar) {
 }
 
 
-inline Vector3d Vector3d::operator /=(const float scalar) {
+Vector3d Vector3d::operator /=(const float scalar) {
     x /= scalar;
     y /= scalar;
     z /= scalar;
@@ -172,12 +172,12 @@ inline Vector3d Vector3d::operator /=(const float scalar) {
 }
 
 
-inline float Vector3d::boxArea() const {
+float Vector3d::boxArea() const {
     return fabs(x * y) + fabs(y * z) + fabs(z * x);
 }
 
 
-inline Vector2d Vector3d::dropIndex(const int index) const {
+Vector2d Vector3d::dropIndex(const int index) const {
     switch (index % 3) {
         case 0:
             return Vector2d(y, z);
@@ -191,7 +191,7 @@ inline Vector2d Vector3d::dropIndex(const int index) const {
 }
 
 
-inline int Vector3d::dominantIndex() const {
+int Vector3d::dominantIndex() const {
     float abs_x = fabs(x),
             abs_y = fabs(y),
             abs_z = fabs(z);
@@ -210,22 +210,23 @@ inline int Vector3d::dominantIndex() const {
     }
 }
 
+// function3d
 
-inline float Vector3d::length() const {
+float Vector3d::length() const {
     return sqrt(lengthSqr());
 }
 
 
-inline float Vector3d::lengthSqr() const {
+float Vector3d::lengthSqr() const {
     return x * x + y * y + z * z;
 }
 
 
-inline Vector3d Vector3d::norm() {
+Vector3d Vector3d::norm() {
     return *this/length();
 }
 
-inline float Vector3d::normalize() {
+float Vector3d::normalize() {
     float len = length();
     *this /= len;
 
@@ -233,11 +234,33 @@ inline float Vector3d::normalize() {
 }
 
 
-inline Vector3d Vector3d::negate() {
+Vector3d Vector3d::negate() {
     x = -x;
     y = -y;
     z = -z;
 
     return *this;
+}
+
+// function2d
+
+float Vector2d::dotProduct(const Vector2d &u, const Vector2d &v) {
+    return (u.x * v.x) +
+           (u.y * v.y);
+}
+
+//function 3d
+
+Vector3d Vector3d::crossProduct(const Vector3d &u, const Vector3d &v) {
+    return Vector3d(u.y * v.z - u.z * v.y,
+                    u.z * v.x - u.x * v.z,
+                    u.x * v.y - u.y * v.x);
+}
+
+
+float Vector3d::dotProduct(const Vector3d &u, const Vector3d &v) {
+    return (u.x * v.x) +
+           (u.y * v.y) +
+           (u.z * v.z);
 }
 

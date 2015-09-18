@@ -15,7 +15,7 @@ include_directories(${PROJECT_SOURCE_DIR} ${PROJECT_LIBRARY_DIR})
 set(SOURCE_FILES
         src/main.cpp
         src/Scene.h
-        src/definition.h src/Camera.h src/Scene.cpp
+        src/Definition.h src/Camera.h src/Scene.cpp
         ${PROJECT_BART_DIR}/animation.c
         ${PROJECT_BART_DIR}/animation.h
         ${PROJECT_BART_DIR}/kbsplpos.c
@@ -26,7 +26,30 @@ set(SOURCE_FILES
         ${PROJECT_BART_DIR}/parse.h
         ${PROJECT_BART_DIR}/quat.c
         ${PROJECT_BART_DIR}/quat.h
-        src/Vector.h src/Point.h src/Color.cpp src/Color.h src/Light.cpp src/Light.h src/Material.cpp src/Material.h src/Primitive.cpp src/Primitive.h src/Planes.cpp src/Planes.h src/Solids.cpp src/Solids.h src/Point.cpp src/Vector.cpp src/VPBase.cpp src/VPBase.h src/Texture.cpp src/Texture.h)
+        src/Vector.h
+        src/Point.h
+        src/Color.cpp
+        src/Color.h
+        src/Light.cpp
+        src/Light.h
+        src/Material.cpp
+        src/Material.h
+        src/Primitive.cpp
+        src/Primitive.h
+        src/Planes.cpp
+        src/Planes.h
+        src/Solids.cpp
+        src/Solids.h
+        src/Point.cpp
+        src/Vector.cpp
+        src/VPBase.cpp
+        src/VPBase.h
+        src/Texture.cpp
+        src/Texture.h
+        src/TriangleMesh.cpp
+        src/TriangleMesh.h
+        src/Utils.h
+        src/Utils.cpp)
 
 add_executable(raytracer ${SOURCE_FILES})
 

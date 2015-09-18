@@ -9,14 +9,17 @@
 #include <stdio.h>
 #include <stdlib.h>
 #include <math.h>
-#include <Light.h>
-#include <Material.h>
-#include <Solids.h>
-#include <Planes.h>
+#include <iostream>
+#include <Utils.h>
+#include "Light.h"
+#include "Material.h"
+#include "Solids.h"
+#include "Planes.h"
+#include "TriangleMesh.h"
 #include "bart/parse.h"
 #include "bart/animation.h"
+#include "Utils.h"
 #include "Scene.h"
-#include "definition.h"
 
 #ifndef  M_PI
 #define  M_PI 3.1415926535897932384626433
@@ -35,6 +38,8 @@
 #define G 1  
 #define B 2  
 #define A 3 /* alpha */
+
+using namespace std;
 
 static int gDetailLevel=0;  /* zero as default */
 
@@ -138,8 +143,10 @@ static void parseViewpoint(FILE *fp, ScenePtr scenePtr)
     * e.g, viInitViewpoint(from, at, up, fov_angle, hither, resx, resy);
     */
 
-    scenePtr->setCamera(new Camera(resx, resy, fov_angle, hither,
-                                   Point3d(from), Point3d(at), Vector3d(up)));
+    scenePtr->setCamera(CameraPtr(
+            new Camera(resx, resy, fov_angle, hither,
+                       Point3d(from), Point3d(at), Vector3d(up))
+    ));
 
   return;
 
@@ -198,7 +205,7 @@ static void parseLight(FILE *fp, ScenePtr scenePtr)
    num=fscanf(fp, "%f %f %f ",&col[X], &col[Y], &col[Z]);
    if(num==0)
    {
-      V4SET4(col,1.0f,1.0f,1.0f,1.0f);
+      col[X] = col[Y] = col[Z] = col[A] = 1.0f;
    }
    else if(num!=3)
    {
@@ -211,7 +218,12 @@ static void parseLight(FILE *fp, ScenePtr scenePtr)
     * e.g. viAddLight(name,pos,col);
     */
 
-    scenePtr->addLight(new Light(Color(col), Point3d(pos)));
+    scenePtr->addLight(LightPtr(
+            new PointLight(
+                    Color(col[R], col[G], col[B], col[A]),
+                    Point3d(pos[X], pos[Y], pos[Z])
+            )
+    ));
 }
 
 /*----------------------------------------------------------------------
@@ -313,9 +325,11 @@ static void parseFill(FILE *fp, ScenePtr scenePtr)
        /* add your extended material here
 	    * e.g., viAddExtendedMaterial(amb,dif,spc,4.0*phong_pow,t,ior);
         */
-        scenePtr->addMaterial(new Material("null", 1.0f, ior, phong_pow,
-                                       Color(amb), Color(dif), Color(spc),
-                                       Color(t, t, t)));
+        scenePtr->addMaterial(MaterialPtr(
+                new Material("noname", 1.0f, ior, phong_pow,
+                             Color(amb), Color(dif), Color(spc),
+                             Color(t, t, t))
+        ));
     }
     else   /* parse the old NFF description of a material */
     {
@@ -334,9 +348,11 @@ static void parseFill(FILE *fp, ScenePtr scenePtr)
        /* add the normal NFF material here 
 	    * e.g., viAddMaterial(col,kd,ks,4.0*phong_pow,t,ior);
         */
-        scenePtr->addMaterial(new Material("null", 1.0f, t, ior,
-                                       Color(col), Color(col)*kd, Color(col)*ks,
-                                       Color(t, t, t)));
+        scenePtr->addMaterial(MaterialPtr(
+                new Material("null", 1.0f, t, ior,
+                             Color(col), Color(col)*kd, Color(col)*ks,
+                             Color(t, t, t))
+        ));
     }
 }
 
@@ -385,8 +401,10 @@ static void parseCone(FILE *fp, ScenePtr scenePtr)
      * e.g., viAddCone(base_pt,r0,apex_pt,r1);
      */
 
-    scenePtr->addPrimitive(new Cone(Point3d(apex_pt), Point3d(base_pt), r1, r0),
-                           scenePtr->getLastMaterial());
+    scenePtr->addPrimitive(
+            PrimitivePtr(new Cone(Point3d(apex_pt), Point3d(base_pt), r1, r0)),
+            scenePtr->getLastMaterial()
+    );
 
 }
 
@@ -417,8 +435,10 @@ static void parseSphere(FILE *fp, ScenePtr scenePtr)
      * e.g., viAddSphere(center,radius);
      */
 
-    scenePtr->addPrimitive(new Sphere(Point3d(center), radius),
-                           scenePtr->getLastMaterial());
+    scenePtr->addPrimitive(
+            PrimitivePtr( new Sphere(Point3d(center), radius) ),
+            scenePtr->getLastMaterial()
+    );
 }	
 
 
@@ -503,16 +523,20 @@ static void parsePoly(FILE *fp, ScenePtr scenePtr)
        /* add a polygon patch here
 	* e.g.,  viAddPolyPatch(nverts,verts,norms);
 	*/
-        scenePtr->addPrimitive(new PolygonPatch(nverts, verts, norms),
-                               scenePtr->getLastMaterial());
+        scenePtr->addPrimitive(
+                PrimitivePtr( new PolygonPatch(nverts, verts, norms) ),
+                scenePtr->getLastMaterial()
+        );
     }
     else
     {
        /* add a polygon here
 	* e.g., viAddPolygon(nverts,verts);
 	*/
-        scenePtr->addPrimitive(new Polygon(nverts, verts),
-                               scenePtr->getLastMaterial());
+        scenePtr->addPrimitive(
+                PrimitivePtr( new Polygon(nverts, verts) ),
+                scenePtr->getLastMaterial()
+        );
     }
 	
     return;
@@ -538,6 +562,7 @@ Format:
 ----------------------------------------------------------------------*/
 static void parseInclude(FILE *fp, ScenePtr scenePtr)
 {
+
    char filename[100];
    FILE *ifp;
    int detail_level;
@@ -547,9 +572,11 @@ static void parseInclude(FILE *fp, ScenePtr scenePtr)
       exit(0);
    }
 
+    Utils::logInfo("Parse include file: \"" + string(filename) + "\".");
+
    if(detail_level<=gDetailLevel) /* skip file if our detail is less than the global detail */
    {
-      if(ifp=fopen(filename,"r"))
+      if((ifp = fopen(filename, "r")))
       {
 	 viParseFile(ifp, scenePtr);  /* parse the file recursively */
 	 fclose(ifp);
@@ -626,6 +653,9 @@ Format:
 ----------------------------------------------------------------------*/
 static void parseTexturedTriangle(FILE *fp, ScenePtr scenePtr)
 {
+
+    Utils::logInfo("Parse textured triangle!");
+
    int is_patch;
    int q;
    Vec3f verts[3];
@@ -647,6 +677,10 @@ static void parseTexturedTriangle(FILE *fp, ScenePtr scenePtr)
      */
 
     TexturePtr texturePtr = scenePtr->getTexture(string(texturename));
+
+    if (!texturePtr) {
+        Utils::logError("Load texture failed!");
+    }
 
    for(q=0;q<3;q++)
    {
@@ -672,7 +706,10 @@ static void parseTexturedTriangle(FILE *fp, ScenePtr scenePtr)
        * e.g., viAddTexturedTriPatch(texturename,verts,norms,tu,tv);
        */
 
-        scenePtr->addPrimitive(new TexturedTrianglePatch(verts, norms, texts), texturePtr);
+        scenePtr->addPrimitive(
+                PrimitivePtr( new TexturedTrianglePatch(verts, norms, texts) ),
+                texturePtr
+        );
    }
    else
    {
@@ -680,7 +717,10 @@ static void parseTexturedTriangle(FILE *fp, ScenePtr scenePtr)
        * e.g.,  viAddTexturedTriangle(texturename,verts,tu,tv);
        */
 
-       scenePtr->addPrimitive(new TexturedTriangle(verts, texts), texturePtr);
+       scenePtr->addPrimitive(
+               PrimitivePtr( new TexturedTriangle(verts, texts) ),
+               texturePtr
+       );
    }
    return;
    
@@ -785,6 +825,8 @@ static void parseAnimatedTriangle(FILE *fp, ScenePtr scenePtr)
 ----------------------------------------------------------------------*/
 static void parseTextureStuff(FILE *fp, ScenePtr scenePtr)
 {
+    Utils::logInfo("Parsing Texture Staff.");
+
    int is_triangle;
 
    is_triangle=getc(fp);
@@ -797,7 +839,7 @@ static void parseTextureStuff(FILE *fp, ScenePtr scenePtr)
       is_triangle=getc(fp);
       if(is_triangle=='a')    /*tpa = triangle, patch, animated */
       {
-	 parseAnimatedTriangle(fp);
+	 parseAnimatedTriangle(fp, scenePtr);
       }
    }
    else
@@ -1224,7 +1266,9 @@ static void parseA(FILE *f, ScenePtr scenePtr)
       }
 
       /* set up your globabl ambient light here using amb */
-       scenePtr->setAmbientLight(new AmbientLight(Color(amb)));
+       scenePtr->setAmbientLight(
+               AmbientLightPtr( new AmbientLight(Color(amb)) )
+       );
    }
    else
    {
@@ -1292,18 +1336,19 @@ static void getTextureCoords(FILE *fp,char *texturename,int *num,Vec2f **vecs)
    *vecs=txts;
 }
 
-static void getTriangles(FILE *fp,int *num_tris,unsigned short **indices,
+static void getTriangles(FILE *fp,int *num_tris,int **indices,
 			 Vec3f *verts,Vec3f *norms,Vec2f *txts)
 {
    int num;
    int q,w;
    int allocsize;
-   unsigned short *idx;
-   int i,v[3],n[3],t[3];
-   
-   allocsize=3;
-   if(norms) allocsize+=3;
-   if(txts) allocsize+=3;
+   int *idx;
+   int i=0,v[3],n[3],t[3];
+
+    //TODO: optimize allocsize
+   allocsize=9;
+   //if(norms) allocsize+=3;
+   //if(txts) allocsize+=3;
    
    if(fscanf(fp,"%d",&num)!=1)
    {
@@ -1311,7 +1356,7 @@ static void getTriangles(FILE *fp,int *num_tris,unsigned short **indices,
       exit(1);      
    }
 
-   idx=(unsigned short *)malloc(num*allocsize*sizeof(unsigned short));
+   idx=(int *)malloc(num*allocsize*sizeof(int));
    if(idx==NULL)
    {
       printf("Error: could not allocate memory for indices of mesh.\n");
@@ -1348,23 +1393,29 @@ static void getTriangles(FILE *fp,int *num_tris,unsigned short **indices,
 
       for(w=0;w<3;w++)
       {
-	 if(txts) idx[i++]=t[w];
-	 if(norms) idx[i++]=n[w];
-	 idx[i++]=v[w];
+         if (txts) idx[i++]=t[w];
+         else idx[i++] = -1;
+         if (norms) idx[i++]=n[w];
+         else idx[i++] = -1;
+         idx[i++]=v[w];
 /*	 printf("vv: %d\n",v[w]); */
       }
    }
    *indices=idx;
    *num_tris=num;
+
+    free(idx);
 }
 
 static void parseMesh(FILE *fp, ScenePtr scenePtr)
 {
+    Utils::logInfo("Parse mesh.");
+
    char str[200];
-   int num_verts,num_norms,num_txts,num_tris;
+   int num_verts = 0, num_norms = 0,num_txts = 0,num_tris = 0;
    Vec3f *verts=NULL,*norms=NULL;
    Vec2f *txts=NULL;
-   unsigned short *indices;
+   int *indices=NULL;
    char texturename[200];
 
    if(fscanf(fp,"%s",str)!=1)
@@ -1402,6 +1453,14 @@ static void parseMesh(FILE *fp, ScenePtr scenePtr)
    /* add a mesh here
     * e.g.,viAddMesh(verts,num_verts,norms,num_norms,txts,num_txts,texturename,indices,num_tris);
     */
+
+    TriangleMeshPtr triangleMeshPtr = TriangleMeshPtr(
+            new TriangleMesh(num_verts, verts, num_norms, norms, num_txts, txts, num_tris, indices)
+    );
+
+    if (txts) scenePtr->addPrimitive(triangleMeshPtr, scenePtr->getTexture(texturename));
+    else scenePtr->addPrimitive(triangleMeshPtr);
+    scenePtr->addMesh(triangleMeshPtr);
 }
 
 
@@ -1415,7 +1474,9 @@ bool viParseFile(FILE *f, ScenePtr scenePtr)
    int ch;
 
    while((ch=getc(f))!=EOF)
-   {  
+   {
+       printf("%c", ch);
+
       switch(ch)
       {
       case ' ':   /* white space */
@@ -1432,51 +1493,53 @@ bool viParseFile(FILE *f, ScenePtr scenePtr)
 	 parseViewpoint(f, scenePtr); /* ok */
 	 break;
       case 'l':   /* light source */
-	 parseLight(f); /* ok */
+	 parseLight(f, scenePtr); /* ok */
 	 break;
       case 'b':   /* background color */
-	 parseBackground(f); /* ok */
+	 parseBackground(f, scenePtr); /* ok */
 	 break;
       case 'f':   /* fill material */
-	 parseFill(f); /* ok */
+	 parseFill(f, scenePtr); /* ok */
 	 break;
       case 'c':   /* cylinder or cone */
-	 parseCone(f); /* ok */
+	 parseCone(f, scenePtr); /* ok */
 	 break;
       case 's':   /* sphere */
-      	 parseSphere(f); /* ok */
+      	 parseSphere(f, scenePtr); /* ok */
 	 break;
       case 'p':   /* polygon or patch */
-	 parsePoly(f);
+	 parsePoly(f, scenePtr);
 	 break;
       case 'i':   /* include another file */
-	 parseInclude(f);  /* ok */
+	 parseInclude(f, scenePtr);  /* ok */
 	 break;
       case 'd':   /* detail level of file (used to exclude objects from rendering) */
 	 parseDetailLevel(f); /* ok */
 	 break;
       case 't':  /* textured triangle, or texture tripatch, or animated triangle */
-	 parseTextureStuff(f);
+	 parseTextureStuff(f, scenePtr);
 	 break;
       case 'x':  /* transform */
 	 parseXform(f);
 	 break;
-      case '}':
-	 viEndXform();
+          case '}':
+	 //viEndXform();
+          //TODO: null transform
 	 break;
       case 'a':  /* animation parameters */
-	 parseA(f);
+	 parseA(f, scenePtr);
 	 break;
       case 'k':  /* key frames for transform (or the camera) */
-	 parseKeyFrames(f);
+	 //parseKeyFrames(f);
 	 break;
       case 'm':  /* triangle mesh */
-	 parseMesh(f);
+	 parseMesh(f, scenePtr);
 	 break;
       default:    /* unknown */
 	 printf("unknown NFF primitive code: %c\n",ch);
 	 exit(1);
       }
    }
+
    return true;
 }

@@ -4,7 +4,7 @@
 
 #include "Color.h"
 
-inline Color& Color::operator =(const Color &color) {
+Color& Color::operator=(const Color &color) {
     if (this == &color) {
         return *this;
     }
@@ -17,7 +17,7 @@ inline Color& Color::operator =(const Color &color) {
 }
 
 
-inline Color Color::operator +(const Color color) const {
+Color Color::operator+(const Color color) const {
     Color result = *this;
     result += color;
 
@@ -25,7 +25,7 @@ inline Color Color::operator +(const Color color) const {
 }
 
 
-inline Color Color::operator +=(const Color color) {
+Color Color::operator+=(const Color color) {
     r += color.r;
     g += color.g;
     b += color.b;
@@ -34,7 +34,7 @@ inline Color Color::operator +=(const Color color) {
 }
 
 //
-//inline Color Color::operator *(const Color color) const {
+//Color Color::operator *(const Color color) const {
 //    Color result = *this;
 //    result *= color;
 //
@@ -42,7 +42,7 @@ inline Color Color::operator +=(const Color color) {
 //}
 //
 //
-//inline Color Color::operator *=(const Color color) {
+//Color Color::operator *=(const Color color) {
 //    r *= color.r;
 //    g *= color.g;
 //    b *= color.b;
@@ -51,7 +51,9 @@ inline Color Color::operator +=(const Color color) {
 //}
 
 
-inline Color Color::operator *(const float scalar) const {
+
+
+Color Color::operator*(const float scalar) const {
     Color result = *this;
     result *= scalar;
 
@@ -59,10 +61,12 @@ inline Color Color::operator *(const float scalar) const {
 }
 
 
-inline Color Color::operator *=(const float scalar) {
+Color Color::operator*=(const float scalar) {
     r *= scalar;
     g *= scalar;
     b *= scalar;
 
     return *this;
 }
+
+const Color Color::noColor = Color(0.0f, 0.0f, 0.0f);

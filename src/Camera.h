@@ -7,6 +7,9 @@
 
 #include "Point.h"
 #include "Vector.h"
+#include <memory>
+
+using namespace std;
 
 class Camera {
 public:
@@ -23,5 +26,7 @@ public:
             fromP(fromP), atP(atP), upV(upV) {
     }
 };
+
+
 
 #endif //RAYTRACER_CAMERA_H

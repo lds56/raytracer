@@ -6,14 +6,18 @@
 #define RAYTRACER_MATERIAL_H
 
 #include "Color.h"
+#include "Definition.h"
+#include <string>
+
+using namespace std;
 
 class Material {
 public:
-    const char* name;
+    string name;
     float attenuation, refraction, shine;
     Color ambience, diffuse, specular, transmission;
 
-    Material(char* name,
+    Material(string name,
              float attenuation, float refraction, float shine,
              Color ambience, Color diffuse, Color specular, Color transmission
     ): name(name), attenuation(attenuation),

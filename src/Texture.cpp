@@ -6,10 +6,14 @@
 #include <cstdlib>
 #include <cstring>
 #include "Texture.h"
+#include "Utils.h"
 
 
 void Texture :: loadTexture(string texturePath)
 {
+
+    Utils::logInfo("Load texture from file.");
+
     FILE *f;
     char ch;
     int colres;
@@ -18,7 +22,7 @@ void Texture :: loadTexture(string texturePath)
     char* filename = new char[texturePath.length() + 1];
     strcpy(filename, texturePath.c_str());
 
-    if(f=fopen(filename,"rb"))
+    if((f = fopen(filename, "rb")))
     {
         char str[100];
         eatWhitespace(f);
@@ -72,8 +76,9 @@ void Texture :: loadTexture(string texturePath)
 
         fclose(f);
 
-        for (int i=0; i<3*width*height; i+=3)
-            colors[i] = Color(mRGB[i], mRGB[i+1], mRGB[i+2]);
+        colors = new Color[width*height];
+        for (int i=0; i<width*height; i+=3)
+            colors[i] = Color(mRGB[3*i], mRGB[3*i+1], mRGB[3*i+2]);
 
     }
     else

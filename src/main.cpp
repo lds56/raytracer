@@ -1,6 +1,8 @@
-#include <memory>
-
 #include "Scene.h"
+#include <iostream>
+#include <unistd.h>
+
+using namespace std;
 
 int main(int argc, char* argv[]) {
 	if (argc != 3) {
@@ -11,9 +13,12 @@ int main(int argc, char* argv[]) {
 	char* inputName = argv[1];
 	char* outputName = argv[2];
 
-	shared_ptr<Scene> scenePtr (inputName);
+	ScenePtr scenePtr = ScenePtr(new Scene(inputName));
 
-	printf("Done!\n");
+    //string s_cwd(getcwd(NULL,0));
+    //cout << "CWD is: " << s_cwd << endl;
+
+	cout << "done!" << endl;
 
 	return 0;
 }

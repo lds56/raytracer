@@ -51,3 +51,4 @@ bin/
 resource/
 
 raytracer
+.DS_Store

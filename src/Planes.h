@@ -8,7 +8,6 @@
 #include "Primitive.h"
 #include "Point.h"
 #include "Vector.h"
-#include "definition.h"
 #include <vector>
 
 using namespace std;
@@ -25,7 +24,7 @@ public:
         vertex = new Point3d[vertexNum];
         for (int i=0; i<vertexNum; i++)
             vertex[i] = Point3d(vertexArray[i]);
-        aNorm = crossProduct(vertex[1] - vertex[0], vertex[2] - vertex[0]).norm();
+        aNorm = Vector3d::crossProduct(vertex[1] - vertex[0], vertex[2] - vertex[0]).norm();
     }
 
 private:

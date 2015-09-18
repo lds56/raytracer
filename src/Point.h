@@ -6,7 +6,6 @@
 #define RAYTRACER_POINT_H
 
 #include "Vector.h"
-#include "definition.h"
 #include <vector>
 
 using namespace std;
@@ -16,32 +15,31 @@ public:
 
     float x, y;
 
-    Point2d(): Vector2d() {}
-    Point2d(Vec2f pos): Vector2d(pos) {}
-    Point2d(float x, float y): Vector2d(x, y) {}
+    Point2d() {}
+    Point2d(float x, float y): x(x), y(y) {}
+    Point2d(Vec2f pos): Point2d(pos[0], pos[1]) {}
 
-    inline Point2d& operator =(const Point2d &point);
+    Point2d operator=(const Point2d &point);
 
-    inline Vector2d operator -(const Point2d &point) const;
+    Vector2d operator-(const Point2d &point) const;
 
-    inline Point2d operator +(const Vector2d &vector) const;
-    inline Point2d operator -(const Vector2d &vector) const;
-    inline Point2d& operator +=(const Vector2d &vector);
-    inline Point2d& operator -=(const Vector2d &vector);
+    Point2d operator+(const Vector2d &vector) const;
+    Point2d operator-(const Vector2d &vector) const;
+    Point2d operator+=(const Vector2d &vector);
+    Point2d operator-=(const Vector2d &vector);
 
-    const static NullPoint = Point2d(233, 233);
+    Point2d operator*(const float scalar) const;
+    Point2d operator/(const float scalar) const;
+    Point2d operator*=(const float scalar);
+    Point2d operator/=(const float scalar);
+
+    static float dotProduct(const Point2d &a, const Point2d &b);
+    static float dotProduct(const Point2d &a, const Vector2d &b);
+    static float dotProduct(const Vector2d &a, const Point2d &b);
+
+    const static Point2d NullPoint;
 };
 
-
-inline float dotProduct(const Point2d &a, const Point2d &b) {
-    return a.x * b.x + a.y * b.y;
-}
-inline float dotProduct(const Point2d &a, const Vector2d &b) {
-    return a.x * b.x + a.y * b.y;
-}
-inline float dotProduct(const Vector2d &a, const Point2d &b) {
-    return a.x * b.x + a.y * b.y;
-}
 
 
 class Point3d {
@@ -49,43 +47,32 @@ public:
 
     float x, y, z;
 
-    Point3d(): Vector3d() {}
-    Point3d(Vec3f pos): Vector3d(pos) {}
-    Point3d(float x, float y, float z): Vector3d(x, y, z) {}
+    Point3d() {}
+    Point3d(float x, float y, float z): x(x), y(y), z(z) {}
+    Point3d(Vec3f pos): Point3d(pos[0], pos[1], pos[2]) {}
 
-    inline Point3d& operator =(const Point3d &point);
+    Point3d operator=(const Point3d &point);
 
-    inline Vector3d operator -(const Point3d &point) const;
+    Vector3d operator-(const Point3d &point) const;
 
-    inline Point3d operator +(const Vector3d &vector) const;
-    inline Point3d operator -(const Vector3d &vector) const;
-    inline Point3d& operator +=(const Vector3d &vector);
-    inline Point3d& operator -=(const Vector3d &vector);
+    Point3d operator+(const Vector3d &vector) const;
+    Point3d operator-(const Vector3d &vector) const;
+    Point3d operator+=(const Vector3d &vector);
+    Point3d operator-=(const Vector3d &vector);
 
-    inline Point3d operator *(const float scalar) const;
-    inline Point3d& operator *=(const float scalar);
+    Point3d operator*(const float scalar) const;
+    Point3d operator*=(const float scalar);
+    Point3d operator/(const float scalar) const;
+    Point3d operator/=(const float scalar);
 
-    const static Point3d NullPoint = Point3d(233, 233, 233);
+    static float dotProduct(const Point3d &a, const Point3d &b);
+    static float dotProduct(const Point3d &a, const Vector3d &b);
+    static float dotProduct(const Vector3d &a, const Point3d &b);
+    static Point3d pointMax(const Point3d &a, const Point3d &b);
+    static Point3d pointMin(const Point3d &a, const Point3d &b);
+
+    const static Point3d NullPoint;
 };
-
-
-inline float dotProduct(const Point3d &a, const Point3d &b) {
-    return a.x * b.x + a.y * b.y + a.z * b.z;
-}
-inline float dotProduct(const Point3d &a, const Vector3d &b) {
-    return a.x * b.x + a.y * b.y + a.z * b.z;
-}
-inline float dotProduct(const Vector3d &a, const Point3d &b) {
-    return a.x * b.x + a.y * b.y + a.z * b.z;
-}
-
-inline Point3d pointMax(const Point3d &a, const Point3d &b) {
-    return Point3d(std::max(a.x, b.x), std::max(a.y, b.y), std::max(a.z, b.z));
-}
-
-inline Point3d pointMin(const Point3d &a, const Point3d &b) {
-    return Point3d(std::min(a.x, b.x), std::min(a.y, b.y), std::min(a.z, b.z));
-}
 
 
 #endif //RAYTRACER_POINT_H

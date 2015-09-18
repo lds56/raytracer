@@ -6,22 +6,29 @@
 #define RAYTRACER_TEXTURE_H
 
 #include "Color.h"
+#include "Definition.h"
 #include <string>
 
 using namespace std;
 
 class Texture {
 public:
-    Texture(char textureName[100]):
-            textureName(string(textureName)) {
-        loadTexture(textureName + string(".ppm"));
+    Texture(char textureName[100]) {
+        Texture(string(textureName));
     }
+
+    Texture(string textureName):
+            textureName(string(textureName)) {
+        loadTexture(textureName);
+    }
+
+    ~Texture() {delete[] colors;}
 
     inline string getTextureName() { return textureName; }
 
 private:
     int height, width;
-    Color* colors;
+    Color* colors; // value < 1.0
     string textureName;
 
     void loadTexture(string texturePath);

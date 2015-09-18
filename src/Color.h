@@ -10,23 +10,32 @@ public:
     float r;
     float g;
     float b;
-    Color(float r, float g, float b): r(r), g(g), b(b) {}
-    Color(float rgb[3]): r(rgb[0]), g(rgb[1]), b(rgb[2]) {}
+    float a;
+
+    Color() {Color(0.0f, 0.0f, 0.0f, 1.0f);}
+
+    Color(float r, float g, float b) { Color(r, g, b, 1.0f); }
+    Color(float r, float g, float b, float a): r(r), g(g), b(b), a(a) {}
+
+    Color(float rgb[3]) { Color(rgb[0], rgb[1], rgb[2]); }
+    Color(float rgb[3], float a) { Color(rgb[0], rgb[1], rgb[2], 1.0f); }
 
     Color(unsigned char r, unsigned char g, unsigned char b):
             Color(r/255.0f, g/255.0f, b/255.0f) {}
     Color(unsigned char rgb[3]):
             Color(rgb[0]/255.0f, rgb[1]/255.0f, rgb[2]/255.0f) {}
 
-    inline Color& operator =(const Color &color);
-    inline Color operator +(const Color color) const;
-    inline Color operator +=(const Color color);
+    Color& operator=(const Color &color);
+    Color operator+(const Color color) const;
+    Color operator+=(const Color color);
 
 //    inline Color operator *(const Color color) const;
 //    inline Color operator *=(const Color color);
 
-    inline Color operator *(const float scalar) const;
-    inline Color operator *=(const float scalar);
+    Color operator*(const float scalar) const;
+    Color operator*=(const float scalar);
+
+    const static Color noColor;
 
 };
 
