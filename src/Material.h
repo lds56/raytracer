@@ -25,7 +25,7 @@ public:
        ambience(ambience), diffuse(diffuse),
        specular(specular), transmission(transmission) {};
 
-    ~Material() {delete this;}
+    ~Material() {}
 };
 
 #endif //RAYTRACER_MATERIAL_H

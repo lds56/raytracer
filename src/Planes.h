@@ -9,12 +9,32 @@
 #include "Point.h"
 #include "Vector.h"
 #include <vector>
+#include <math.h>
 
 using namespace std;
 
 class Plane : public Primitive {
 public:
+    Plane() {}
+    Plane(Vector3d aNorm, Point3d aPoint):
+            aNorm(aNorm), aPoint(aPoint) {
+        float ax = fabs(aNorm.x);
+        float ay = fabs(aNorm.y);
+        float az = fabs(aNorm.z);
+        if (ax >= ay && ax >= az) domiCoord = 0;
+        else if (ay >= ax && ay >= az) domiCoord = 1;
+        else if (az >= ax && az >= ay) domiCoord = 2;
+        else domiCoord = -1;
+    }
 
+    virtual bool isIntesected(RayPtr rayPtr);
+    Point3d calcIntesection(RayPtr rayPtr);
+    int getDomiCoord() {return domiCoord;}
+
+private:
+    Vector3d aNorm;
+    Point3d aPoint;
+    int domiCoord;
 };
 
 class Polygon : public Plane {
@@ -24,13 +44,27 @@ public:
         vertex = new Point3d[vertexNum];
         for (int i=0; i<vertexNum; i++)
             vertex[i] = Point3d(vertexArray[i]);
-        aNorm = Vector3d::crossProduct(vertex[1] - vertex[0], vertex[2] - vertex[0]).norm();
+        Plane(Vector3d::crossProduct(vertex[1] - vertex[0], vertex[2] - vertex[0]).norm(),
+              vertex[0]);
+
+        projVertex = new Point2d[vertexNum];
+        for (int i=0; i<vertexNum; i++)
+            projVertex[i] = vertex[i].projectTo(getDomiCoord());
+    }
+
+    bool isIntesected(RayPtr rayPtr);
+
+    void buildBoVo();
+
+    ~Polygon() {
+        delete[] vertex;
+        delete[] projVertex;
     }
 
 private:
-    Vector3d aNorm;
     int vertexNum;
     Point3d* vertex;
+    Point2d* projVertex; // Projective vertex
 };
 
 class PolygonPatch : public Polygon {

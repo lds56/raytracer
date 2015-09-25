@@ -10,6 +10,6 @@
 #include <Scene.h>
 
 bool viParseArgs(int argc, char *argv[], char **filename);
-bool viParseFile(FILE *f, ScenePtr scenePtr);
+bool viParseFile(FILE *f, Scene* scenePtr);
 
 #endif

@@ -10,11 +10,11 @@
 
 class Vector2d {
 public:
-    float x, y;
+    float u, v;
 
     Vector2d() {}
-    Vector2d(float x, float y): x(x), y(y) {}
-    Vector2d(Vec2f pos): x(pos[0]), y(pos[1]) {}
+    Vector2d(float u, float v): u(u), v(v) {}
+    Vector2d(Vec2f pos): u(pos[0]), v(pos[1]) {}
 
     Vector2d operator=(const Vector2d &vector);
 

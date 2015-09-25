@@ -18,6 +18,11 @@ public:
     void setMaterial(MaterialPtr materialPtr) {this->materialPtr = materialPtr;}
     void setTexture(TexturePtr texturePtr) {this->texturePtr = texturePtr;}
 
+    virtual bool isIntersected(RayPtr rPtr);
+
+    virtual void buildBoVo();
+    //virtual int intersect()
+
 private:
     MaterialPtr materialPtr;
     TexturePtr texturePtr;

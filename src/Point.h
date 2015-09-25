@@ -13,15 +13,17 @@ using namespace std;
 class Point2d {
 public:
 
-    float x, y;
+    float u, v;
 
     Point2d() {}
-    Point2d(float x, float y): x(x), y(y) {}
+    Point2d(float u, float v): u(u), v(v) {}
     Point2d(Vec2f pos): Point2d(pos[0], pos[1]) {}
 
     Point2d operator=(const Point2d &point);
+    bool operator==(const Point2d &point);
 
     Vector2d operator-(const Point2d &point) const;
+    Point2d operator+(const Point2d &point) const;
 
     Point2d operator+(const Vector2d &vector) const;
     Point2d operator-(const Vector2d &vector) const;
@@ -37,6 +39,9 @@ public:
     static float dotProduct(const Point2d &a, const Vector2d &b);
     static float dotProduct(const Vector2d &a, const Point2d &b);
 
+    bool isNullPoint();
+
+    const static Point2d& getNullPoint();
     const static Point2d NullPoint;
 };
 
@@ -52,8 +57,10 @@ public:
     Point3d(Vec3f pos): Point3d(pos[0], pos[1], pos[2]) {}
 
     Point3d operator=(const Point3d &point);
+    bool operator==(const Point3d &point);
 
     Vector3d operator-(const Point3d &point) const;
+    Point3d operator+(const Point3d &vector) const;
 
     Point3d operator+(const Vector3d &vector) const;
     Point3d operator-(const Vector3d &vector) const;
@@ -71,6 +78,11 @@ public:
     static Point3d pointMax(const Point3d &a, const Point3d &b);
     static Point3d pointMin(const Point3d &a, const Point3d &b);
 
+    Point2d projectTo(int coord);
+
+    bool isNullPoint();
+
+    const static Point3d& getNullPoint();
     const static Point3d NullPoint;
 };
 

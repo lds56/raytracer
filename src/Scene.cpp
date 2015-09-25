@@ -4,16 +4,22 @@
 
 #include <iostream>
 #include "Scene.h"
+#include "Utils.h"
 
 int Scene ::loadFrom(char* fileName) {
     FILE * file;
     if (!(file = fopen(fileName, "r"))) {
         printf("File %s not found.\n", fileName);
-        return 0;
+        return 1;
     }
 
-    viParseFile(file, ScenePtr(this));
-    return 1;
+    viParseFile(file, this);
+    return 0;
+}
+
+void Scene ::buildNodetree(float time) {
+    Utils :: logError("Not implemented yet!");
+    exit(1);
 }
 
 TexturePtr Scene :: getTexture(string textureName) {
@@ -32,6 +38,12 @@ TexturePtr Scene :: getTexture(string textureName) {
     textures.push_back(newTexturePtr);
     return newTexturePtr;
     //}
+}
+
+void Scene :: setAnimParams(float animStart, float animEnd, int frameNum) {
+    this->animStart = animStart;
+    this->animEnd = animEnd;
+    this->frameNum = frameNum;
 }
 
 void Scene :: addPrimitive(PrimitivePtr pPtr) {

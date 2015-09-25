@@ -11,53 +11,53 @@ Vector2d Vector2d::operator =(const Vector2d &vector) {
         return *this;
     }
 
-    x = vector.x;
-    y = vector.y;
+    u = vector.u;
+    v = vector.v;
 
     return *this;
 }
 
 
 Vector2d Vector2d::operator +(const Vector2d &vector) const {
-    return Vector2d(x + vector.x, y + vector.y);
+    return Vector2d(u + vector.u, v + vector.v);
 }
 
 
 Vector2d Vector2d::operator -(const Vector2d &vector) const {
-    return Vector2d(x - vector.x, y - vector.y);
+    return Vector2d(u - vector.v, u - vector.v);
 }
 
 
 Vector2d Vector2d::operator +=(const Vector2d &vector) {
-    x += vector.x;
-    y += vector.y;
+    u += vector.u;
+    v += vector.v;
 
     return *this;
 }
 
 
 Vector2d Vector2d::operator -=(const Vector2d &vector) {
-    x -= vector.x;
-    y -= vector.y;
+    u -= vector.u;
+    v -= vector.v;
 
     return *this;
 }
 
 
 Vector2d Vector2d::operator *(const float scalar) const {
-    return Vector2d(x * scalar, y * scalar);
+    return Vector2d(u * scalar, v * scalar);
 }
 
 
 Vector2d Vector2d::operator /(const float scalar) const {
     float invScalar = 1.0f / scalar;
-    return Vector2d(x * invScalar, y * invScalar);
+    return Vector2d(u * invScalar, v * invScalar);
 }
 
 
 Vector2d Vector2d::operator *=(const float scalar) {
-    x *= scalar;
-    y *= scalar;
+    u *= scalar;
+    v *= scalar;
 
     return *this;
 }
@@ -65,8 +65,8 @@ Vector2d Vector2d::operator *=(const float scalar) {
 
 Vector2d Vector2d::operator /=(const float scalar) {
     float invScalar = 1.0f / scalar;
-    x *= scalar;
-    y *= scalar;
+    u *= scalar;
+    v *= scalar;
 
     return *this;
 }
@@ -78,7 +78,7 @@ float Vector2d::length() const {
 
 
 float Vector2d::lengthSqr() const {
-    return x * x + y * y;
+    return u * u + v * v;
 }
 
 
@@ -91,8 +91,8 @@ float Vector2d::normalize() {
 
 
 Vector2d Vector2d::negate() {
-    x = -x;
-    y = -y;
+    u = -v;
+    u = -v;
 
     return *this;
 }
@@ -244,23 +244,23 @@ Vector3d Vector3d::negate() {
 
 // function2d
 
-float Vector2d::dotProduct(const Vector2d &u, const Vector2d &v) {
-    return (u.x * v.x) +
-           (u.y * v.y);
+float Vector2d::dotProduct(const Vector2d &v1, const Vector2d &v2) {
+    return (v1.u * v2.u) +
+           (v2.v * v2.v);
 }
 
 //function 3d
 
-Vector3d Vector3d::crossProduct(const Vector3d &u, const Vector3d &v) {
-    return Vector3d(u.y * v.z - u.z * v.y,
-                    u.z * v.x - u.x * v.z,
-                    u.x * v.y - u.y * v.x);
+Vector3d Vector3d::crossProduct(const Vector3d &v1, const Vector3d &v2) {
+    return Vector3d(v1.y * v2.z - v1.z * v2.y,
+                    v1.z * v2.x - v1.x * v2.z,
+                    v1.x * v2.y - v1.y * v2.x);
 }
 
 
-float Vector3d::dotProduct(const Vector3d &u, const Vector3d &v) {
-    return (u.x * v.x) +
-           (u.y * v.y) +
-           (u.z * v.z);
+float Vector3d::dotProduct(const Vector3d &v1, const Vector3d &v2) {
+    return (v1.x * v2.x) +
+           (v1.y * v2.y) +
+           (v1.z * v2.z);
 }
 

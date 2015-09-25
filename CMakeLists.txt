@@ -15,7 +15,7 @@ include_directories(${PROJECT_SOURCE_DIR} ${PROJECT_LIBRARY_DIR})
 set(SOURCE_FILES
         src/main.cpp
         src/Scene.h
-        src/Definition.h src/Camera.h src/Scene.cpp
+        src/Definition.h src/Viewpoint.h src/Scene.cpp
         ${PROJECT_BART_DIR}/animation.c
         ${PROJECT_BART_DIR}/animation.h
         ${PROJECT_BART_DIR}/kbsplpos.c
@@ -49,7 +49,8 @@ set(SOURCE_FILES
         src/TriangleMesh.cpp
         src/TriangleMesh.h
         src/Utils.h
-        src/Utils.cpp)
+        src/Utils.cpp
+        src/Screen.cpp src/Screen.h src/BoundingVolume.cpp src/BoundingVolume.h src/Ray.cpp src/Ray.h)
 
 add_executable(raytracer ${SOURCE_FILES})
 

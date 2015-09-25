@@ -11,7 +11,7 @@
 class Light {
 public:
     Light(Color color): color(color) {}
-    ~Light() {delete this;}
+    ~Light() {}
 
 private:
     Color color;

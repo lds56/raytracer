@@ -18,7 +18,7 @@ int main(int argc, char* argv[]) {
     //string s_cwd(getcwd(NULL,0));
     //cout << "CWD is: " << s_cwd << endl;
 
-	cout << "done!" << endl;
+	cout << "Done!" << endl;
 
 	return 0;
 }

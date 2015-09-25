@@ -20,6 +20,7 @@
 #include "bart/animation.h"
 #include "Utils.h"
 #include "Scene.h"
+#include "PrimColle.h"
 
 #ifndef  M_PI
 #define  M_PI 3.1415926535897932384626433
@@ -110,7 +111,7 @@ static void parseComment(FILE *f)
   A view entity must be defined before any objects are defined (this
   requirement is so that NFF files can be used by hidden surface machines).
 ----------------------------------------------------------------------*/
-static void parseViewpoint(FILE *fp, ScenePtr scenePtr)
+static void parseViewpoint(FILE *fp, Scene* scenePtr)
 {
    Vec3f from;
    Vec3f at;
@@ -143,8 +144,8 @@ static void parseViewpoint(FILE *fp, ScenePtr scenePtr)
     * e.g, viInitViewpoint(from, at, up, fov_angle, hither, resx, resy);
     */
 
-    scenePtr->setCamera(CameraPtr(
-            new Camera(resx, resy, fov_angle, hither,
+    scenePtr->setViewpoint(ViewpointPtr(
+            new Viewpoint(resx, resy, fov_angle, hither,
                        Point3d(from), Point3d(at), Vector3d(up))
     ));
 
@@ -173,7 +174,7 @@ static void parseViewpoint(FILE *fp, ScenePtr scenePtr)
     may change soon, with the addition of an intensity and/or color].
     The name of an animated light must not contain any white spaces.
 ----------------------------------------------------------------------*/
-static void parseLight(FILE *fp, ScenePtr scenePtr)
+static void parseLight(FILE *fp, Scene* scenePtr)
 {
    Vec4f pos;
    Vec4f col;
@@ -237,7 +238,7 @@ static void parseLight(FILE *fp, ScenePtr scenePtr)
 
     If no background color is set, assume RGB = {0,0,0}.
 ----------------------------------------------------------------------*/
-static void parseBackground(FILE *fp, ScenePtr scenePtr)
+static void parseBackground(FILE *fp, Scene* scenePtr)
 {
    Vec3f bgcolor;
 	
@@ -286,7 +287,7 @@ static void parseBackground(FILE *fp, ScenePtr scenePtr)
     The fill color is used to color the objects following it until a new color
     is assigned.
 ----------------------------------------------------------------------*/
-static void parseFill(FILE *fp, ScenePtr scenePtr)
+static void parseFill(FILE *fp, Scene* scenePtr)
 {
     float kd, ks, phong_pow, t, ior;
     Vec3f col;
@@ -380,7 +381,7 @@ static void parseFill(FILE *fp, ScenePtr scenePtr)
     visible).  Note that the base and apex cannot be coincident for a cylinder
     or cone.
 ----------------------------------------------------------------------*/
-static void parseCone(FILE *fp, ScenePtr scenePtr)
+static void parseCone(FILE *fp, Scene* scenePtr)
 {
    Vec3f base_pt;
    Vec3f apex_pt;
@@ -421,7 +422,7 @@ Format:
     If the radius is negative, then only the sphere's inside is visible
     (objects are normally considered one sided, with the outside visible).
 ----------------------------------------------------------------------*/
-static void parseSphere(FILE *fp, ScenePtr scenePtr)
+static void parseSphere(FILE *fp, Scene* scenePtr)
 {
     float radius;
     Vec3f center;
@@ -476,7 +477,7 @@ Format:
     pp %d
     [ %g %g %g %g %g %g ] <-- for total_vertices vertices
 ----------------------------------------------------------------------*/
-static void parsePoly(FILE *fp, ScenePtr scenePtr)
+static void parsePoly(FILE *fp, Scene* scenePtr)
 {
    int ispatch;
    int nverts;
@@ -560,7 +561,7 @@ Format:
 
     The file name may not include any white spaces.
 ----------------------------------------------------------------------*/
-static void parseInclude(FILE *fp, ScenePtr scenePtr)
+static void parseInclude(FILE *fp, Scene* scenePtr)
 {
 
    char filename[100];
@@ -651,7 +652,7 @@ Format:
     The texture name may not include any white spaces.
     Note that the texturing works like OpenGL REPEAT mode.
 ----------------------------------------------------------------------*/
-static void parseTexturedTriangle(FILE *fp, ScenePtr scenePtr)
+static void parseTexturedTriangle(FILE *fp, Scene* scenePtr)
 {
 
     Utils::logInfo("Parse textured triangle!");
@@ -777,38 +778,49 @@ Format:
         animated triangle patch. See viGetAnimatedTriangle() in render.c
 ----------------------------------------------------------------------*/
 
-static void parseAnimatedTriangle(FILE *fp, ScenePtr scenePtr)
+static void parseAnimatedTriangle(FILE *fp, Scene* scenePtr)
 {
    int q,w;
    int num_times;
    Vec3f *verts;
    Vec3f *norms;
-   float *times;
+   float time;
    
    fscanf(fp,"%d",&num_times);
-   times=(float*)malloc(sizeof(float)*num_times);
-   verts=(Vec3f*)malloc(sizeof(Vec3f)*3*num_times);
-   norms=(Vec3f*)malloc(sizeof(Vec3f)*3*num_times);
+
+   verts=(Vec3f*)malloc(sizeof(Vec3f)*3);
+   norms=(Vec3f*)malloc(sizeof(Vec3f)*3);
+
+    PrimCollePtr primCollePtr = PrimCollePtr(new PrimColle());
 
    for(q=0;q<num_times;q++)
    {
-      if(fscanf(fp," %f",&times[q])!=1)
+      if(fscanf(fp," %f",&time)!=1)
 	 goto parseErr;
 
       for(w=0;w<3;w++)
       {
-	 if(fscanf(fp," %f %f %f",&verts[q*3+w][X],&verts[q*3+w][Y],&verts[q*3+w][Z])!=3)
+	 if(fscanf(fp," %f %f %f",&verts[w][X],&verts[w][Y],&verts[w][Z])!=3)
 	    goto parseErr;
 	 
       
-	 if(fscanf(fp," %f %f %f",&norms[q*3+w][X],&norms[q*3+w][Y],&norms[q*3+w][Z])!=3)
+	 if(fscanf(fp," %f %f %f",&norms[w][X],&norms[w][Y],&norms[w][Z])!=3)
 	    goto parseErr;	 
       }
+
+       primCollePtr->addFrame(time, PrimitivePtr(new TrianglePatch(verts, norms)),
+                              scenePtr->getLastMaterial());
    }
 
    /* add a animated triangle here
     * e.g., viAddAnimatedTriangle(num_times,times,verts,norms); 
     */
+
+    scenePtr->addPrimColle(primCollePtr);
+
+    free(verts);
+    free(norms);
+
    return;
    
  parseErr:
@@ -823,15 +835,16 @@ static void parseAnimatedTriangle(FILE *fp, ScenePtr scenePtr)
   textured triangle (or tri patch), which starts with "tt"
   Currently, we removed the "t"
 ----------------------------------------------------------------------*/
-static void parseTextureStuff(FILE *fp, ScenePtr scenePtr)
+static void parseTextureStuff(FILE *fp, Scene* scenePtr)
 {
-    Utils::logInfo("Parsing Texture Staff.");
+    Utils::logInfo("Parse Texture Staff.");
 
    int is_triangle;
 
    is_triangle=getc(fp);
    if(is_triangle=='t')
    {
+       Utils::logInfo("Parse textured triangle.");
       parseTexturedTriangle(fp, scenePtr);
    }
    else if(is_triangle=='p')
@@ -839,7 +852,8 @@ static void parseTextureStuff(FILE *fp, ScenePtr scenePtr)
       is_triangle=getc(fp);
       if(is_triangle=='a')    /*tpa = triangle, patch, animated */
       {
-	 parseAnimatedTriangle(fp, scenePtr);
+          Utils::logInfo("Parse animated triangle.");
+	        parseAnimatedTriangle(fp, scenePtr);
       }
    }
    else
@@ -1215,8 +1229,10 @@ Format:
       Note: the step time (from one frame to the next) is then
       (end_time-start_time)/(num_frames-1)
 ----------------------------------------------------------------------*/
-static void parseAnimParams(FILE *fp, ScenePtr scenePtr)
+static void parseAnimParams(FILE *fp, Scene* scenePtr)
 {
+    Utils::logInfo("Parse animation parameters.");
+
    float start,end;
    int num_frames;
    if(fscanf(fp,"%f %f %d",&start,&end,&num_frames)!=3)
@@ -1227,6 +1243,8 @@ static void parseAnimParams(FILE *fp, ScenePtr scenePtr)
    /* add animations parameters here
     * e.g., viSetupAnimParams(start,end,num_frames);
     */
+
+    scenePtr->setAnimParams(start, end, num_frames);
 }
 
 /*----------------------------------------------------------------------
@@ -1243,7 +1261,7 @@ Format:
     and it can be set with, e.g., "am 0.5 0.5 0.5".
     Default value is "am 1.0 1.0 1.0".
 ----------------------------------------------------------------------*/
-static void parseA(FILE *f, ScenePtr scenePtr)
+static void parseA(FILE *f, Scene* scenePtr)
 {
    char name[100];
    char ch;
@@ -1407,7 +1425,7 @@ static void getTriangles(FILE *fp,int *num_tris,int **indices,
     free(idx);
 }
 
-static void parseMesh(FILE *fp, ScenePtr scenePtr)
+static void parseMesh(FILE *fp, Scene* scenePtr)
 {
     Utils::logInfo("Parse mesh.");
 
@@ -1469,7 +1487,7 @@ static void parseMesh(FILE *fp, ScenePtr scenePtr)
   Description:
     parses the animation file
 ----------------------------------------------------------------------*/
-bool viParseFile(FILE *f, ScenePtr scenePtr)
+bool viParseFile(FILE *f, Scene* scenePtr)
 {
    int ch;
 

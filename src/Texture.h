@@ -13,16 +13,19 @@ using namespace std;
 
 class Texture {
 public:
-    Texture(char textureName[100]) {
+
+    Texture(): colors(NULL) {}
+
+    Texture(char textureName[100]): colors(NULL) {
         Texture(string(textureName));
     }
 
     Texture(string textureName):
-            textureName(string(textureName)) {
+            textureName(string(textureName)), colors(NULL) {
         loadTexture(textureName);
     }
 
-    ~Texture() {delete[] colors;}
+    ~Texture() {if (colors) delete[] colors;}
 
     inline string getTextureName() { return textureName; }
 
