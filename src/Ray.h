@@ -23,7 +23,10 @@ public:
     }
     Point3d getOrigin() {return origin;}
     Vector3d getDirection() {return direction;}
-    Point3d shootAt(float k) {return origin + k*direction;}
+    Point3d shootAt(float k) {return origin + direction*k;}
+    Point3d project(Point3d aPoint) {
+        return shootAt(Vector3d::dotProduct(origin - aPoint, direction));
+    }
 
 private:
     MaterialPtr medium;

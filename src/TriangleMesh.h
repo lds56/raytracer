@@ -8,6 +8,7 @@
 #include "Primitive.h"
 #include "Definition.h"
 #include "Point.h"
+#include "BoundingVolume.h"
 #include <vector>
 
 using namespace std;
@@ -56,6 +57,9 @@ public:
                  vector<Vector3d> normals, vector<Point2d> textCoords):
             points(points), normals(normals), textCoords(textCoords) {}
 
+    void initialize();
+    void buildBoundingVolume();
+
 private:
     int pointNum, normalNum, textCoordNum, triangleNum;
     vector<Point3d> points;
@@ -64,6 +68,8 @@ private:
     vector<unsigned short> textIndice;
     vector<unsigned short> normIndice;
     vector<unsigned short> pointIndice;
+
+
 };
 
 #endif //RAYTRACER_TRIANGLEMESH_H

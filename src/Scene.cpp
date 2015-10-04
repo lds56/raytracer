@@ -18,8 +18,18 @@ int Scene ::loadFrom(char* fileName) {
 }
 
 void Scene ::buildNodetree(float time) {
-    Utils :: logError("Not implemented yet!");
-    exit(1);
+    vector<PrimitivePtr> allPrimitives(primitives);
+    for (vector<PrimCollePtr>::iterator iter=primcolles.begin();
+            iter!=primcolles.end(); iter++) {
+        allPrimitives.push_back((*iter)->getPrimitiveAt(time));
+    }
+
+    for (vector<TriangleMeshPtr>::iterator iter=meshes.begin();
+            iter!=meshes.end(); iter++) {
+        //(*iter)->init();
+    }
+    //Utils :: logError("Not implemented yet!");
+    //exit(1);
 }
 
 TexturePtr Scene :: getTexture(string textureName) {

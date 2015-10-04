@@ -6,7 +6,12 @@
 #define RAYTRACER_VECTOR_H
 
 #include <cstdio>
+#include <vector>
+#include "Point.h"
+#include "Matrix.h"
 #include "Definition.h"
+
+using namespace std;
 
 class Vector2d {
 public:
@@ -43,8 +48,7 @@ public:
 
     Vector3d() {}
     Vector3d(Vec3f pos): x(pos[0]), y(pos[1]), z(pos[2]) {}
-    Vector3d(const float x, const float y, const float z):
-            x(x), y(y), z(z) {}
+    Vector3d(const float x, const float y, const float z): x(x), y(y), z(z) {}
 
     Vector3d operator=(const Vector3d &vector);
 
@@ -58,6 +62,7 @@ public:
     Vector3d operator*=(const float scalar);
     Vector3d operator/=(const float scalar);
 
+
     int dominantIndex() const;
     float boxArea() const;
     float length() const;
@@ -66,6 +71,11 @@ public:
     Vector2d dropIndex(const int index) const;
     Vector3d norm();
     Vector3d negate();
+    vector<float> toVector();
+    Matrix<float> toMatrix();
+    Point3d toPoint();
+
+    float cosThetaWith(Vector3d vector);
 
     void print(char * id) const {
         printf("Vector %s: %f, %f, %f\n", id, x, y, z);
@@ -73,6 +83,9 @@ public:
 
     static Vector3d crossProduct(const Vector3d &u, const Vector3d &v);
     static float dotProduct(const Vector3d &u, const Vector3d &v);
+    static float module(Vector3d &v);
+    static float moduleSqr(Vector3d &v);
+
 };
 
 

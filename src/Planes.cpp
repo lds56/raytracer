@@ -6,21 +6,18 @@
 #include "Utils.h"
 #include "Ray.h"
 
-bool Plane :: isIntesected(RayPtr rPtr) {
-    return !rPtr->isOrthogonal(aNorm);
-}
+Point3d Plane ::getIntersection(RayPtr rPtr){
+    if (rPtr->isOrthogonal(aNorm)) return Point3d::getNullPoint();
 
-Point3d Plane :: calcIntesection(RayPtr rPtr) {
     float k = Vector3d::dotProduct(aPoint - rPtr->getOrigin(), aNorm) /
               Vector3d::dotProduct(rPtr->getDirection(), aNorm);
-
     if (Utils::fIsPos(k)) return rPtr->shootAt(k);
     else return Point3d::getNullPoint();
 }
 
-bool Polygon :: isIntesected(RayPtr rayPtr) {
-    Point3d interP = Plane::calcIntesection(rayPtr);
-    if (interP.isNullPoint()) return false;
+Point3d Polygon :: getIntersection(RayPtr rayPtr) {
+    Point3d interP = Plane::getIntersection(rayPtr);
+    if (interP.isNullPoint()) return Point3d::getNullPoint();
     else {
         for (int i=0; i<vertexNum; i++) // substract offset
             projVertex[i] -= (interP.projectTo(getDomiCoord()) - Point2d(0, 0));
@@ -30,9 +27,11 @@ bool Polygon :: isIntesected(RayPtr rayPtr) {
             Point2d& pa = projVertex[a];
             Point2d& pb = projVertex[b];
             if (SHValue != Utils::NSHFunc(pb.v)) {
-                if ((pa.u > 0 && pb.u > 0) ||
-                    (pa.u > 0 || pb.u > 0) &&
-                       pa.u - pa.v * (pb.u - pa.u) * Utils::fInverse(pb.v - pa.v))
+                if ((pa.u > 0 && pb.u > 0))
+                //||
+                  //  (pa.u > 0 || pb.u > 0) &&
+                    //   pa.u - pa.v * (pb.u - pa.u) * Utils::fInverse(pb.v - pa.v))
+                    //TODO: Leave something out
                     crossNum++;
             }
             SHValue = Utils::NSHFunc(pb.v);
@@ -40,17 +39,18 @@ bool Polygon :: isIntesected(RayPtr rayPtr) {
         for (int i=0; i<vertexNum; i++) // Add back the offset
             projVertex[i] += (interP.projectTo(getDomiCoord()) - Point2d(0, 0));
 
-        return crossNum%2 == 1;
+        if (crossNum%2 == 1) return interP;
+        else return Point3d::getNullPoint();
     }
 
 }
 
-void Polygon :: buildBoVo() {
+void Polygon :: buildBoundingVolume() {
     Point3d maxCorner = vertex[0];
     Point3d minCorner = vertex[0];
     for (int i=1; i<vertexNum; i++) {
         maxCorner = Point3d::pointMax(maxCorner, vertex[i]);
         minCorner = Point3d::pointMin(minCorner, vertex[i]);
     }
-    BoVoPtr boVoPtr = BoVoPtr(new BoundingVolume(minCorner, maxCorner));
+    BoundingVolumePtr bvPtr = BoundingVolumePtr(new BoundingVolume(minCorner, maxCorner));
 }

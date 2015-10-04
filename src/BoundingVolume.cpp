@@ -4,4 +4,5 @@
 
 #include "BoundingVolume.h"
 
-const Vector3d borderVector = Vector3d(FLOAT_EPSILLON, FLOAT_EPSILLON, FLOAT_EPSILLON);
+const Vector3d BoundingVolume::borderVector =
+        Vector3d(FLOAT_EPSILLON, FLOAT_EPSILLON, FLOAT_EPSILLON);

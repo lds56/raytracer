@@ -7,6 +7,8 @@
 
 #include "Material.h"
 #include "Texture.h"
+#include "Definition.h"
+#include "Point.h"
 
 class Primitive {
 public:
@@ -18,14 +20,15 @@ public:
     void setMaterial(MaterialPtr materialPtr) {this->materialPtr = materialPtr;}
     void setTexture(TexturePtr texturePtr) {this->texturePtr = texturePtr;}
 
-    virtual bool isIntersected(RayPtr rPtr);
+    virtual Point3d getIntersection(RayPtr rPtr);
 
-    virtual void buildBoVo();
+    virtual void buildBoundingVolume();
     //virtual int intersect()
 
-private:
+protected:
     MaterialPtr materialPtr;
     TexturePtr texturePtr;
+    BoundingVolumePtr bvPtr;
 
 };
 

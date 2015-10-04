@@ -4,13 +4,14 @@ project(raytracer)
 
 set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -std=c++11")
 set(PROJECT_SOURCE_DIR ${CMAKE_CURRENT_SOURCE_DIR}/src)
+set(PROJECT_TEST_DIR ${CMAKE_CURRENT_SOURCE_DIR}/test)
 set(PROJECT_BINARY_DIR ${CMAKE_CURRENT_SOURCE_DIR}/bin)
 set(PROJECT_LIBRARY_DIR ${CMAKE_CURRENT_SOURCE_DIR}/lib)
 set(PROJECT_BART_DIR ${CMAKE_CURRENT_SOURCE_DIR}/lib/bart)
 
 add_subdirectory(${PROJECT_SOURCE_DIR} ${PROJECT_BINARY_DIR})
 
-include_directories(${PROJECT_SOURCE_DIR} ${PROJECT_LIBRARY_DIR})
+include_directories(${PROJECT_SOURCE_DIR} ${PROJECT_LIBRARY_DIR} ${PROJECT_TEST_DIR})
 
 set(SOURCE_FILES
         src/main.cpp
@@ -26,6 +27,7 @@ set(SOURCE_FILES
         ${PROJECT_BART_DIR}/parse.h
         ${PROJECT_BART_DIR}/quat.c
         ${PROJECT_BART_DIR}/quat.h
+        ${PROJECT_LIBRARY_DIR}/catch.hpp
         src/Vector.h
         src/Point.h
         src/Color.cpp
@@ -50,7 +52,20 @@ set(SOURCE_FILES
         src/TriangleMesh.h
         src/Utils.h
         src/Utils.cpp
-        src/Screen.cpp src/Screen.h src/BoundingVolume.cpp src/BoundingVolume.h src/Ray.cpp src/Ray.h)
+        src/PrimColle.cpp
+        src/PrimColle.h
+        src/Screen.cpp
+        src/Screen.h
+        src/BoundingVolume.cpp
+        src/BoundingVolume.h
+        src/Ray.cpp src/Ray.h
+        src/Matrix.cpp
+        src/Matrix.h
+        src/Tree.cpp
+        src/Tree.h
+        src/KDTree.cpp
+        src/KDTree.h
+        test/Utils_tests.cpp)
 
 add_executable(raytracer ${SOURCE_FILES})
 

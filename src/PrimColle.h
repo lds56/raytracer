@@ -29,6 +29,9 @@ public:
         pPtr->setMaterial(mPtr);
         addFrame(frameTime, pPtr);
     }
+    PrimitivePtr getPrimitiveAt(int frameTime) {
+        return frameMap[frameTime];
+    }
 
     ~PrimColle() {}
 

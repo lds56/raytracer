@@ -213,7 +213,7 @@ int Vector3d::dominantIndex() const {
 // function3d
 
 float Vector3d::length() const {
-    return sqrt(lengthSqr());
+    return sqrtf(lengthSqr());
 }
 
 
@@ -242,6 +242,25 @@ Vector3d Vector3d::negate() {
     return *this;
 }
 
+float Vector3d::cosThetaWith(Vector3d vector) {
+    return dotProduct(*this, vector) /
+           (sqrtf(moduleSqr(*this) * moduleSqr(vector)));
+}
+
+vector<float> Vector3d::toVector() {
+    return vector<float>{x, y, z};
+}
+
+Matrix<float> Vector3d::toMatrix() {
+    vector<vector<float>> v;
+    v.push_back(this->toVector());
+    return Matrix<float>(1, 3, v).transpose();
+}
+
+Point3d Vector3d::toPoint() {
+    return Point3d(x, y, z);
+}
+
 // function2d
 
 float Vector2d::dotProduct(const Vector2d &v1, const Vector2d &v2) {
@@ -264,3 +283,11 @@ float Vector3d::dotProduct(const Vector3d &v1, const Vector3d &v2) {
            (v1.z * v2.z);
 }
 
+
+float Vector3d::module(Vector3d &v) {
+    return v.length();
+}
+
+float Vector3d::moduleSqr(Vector3d &v) {
+    return v.lengthSqr();
+}

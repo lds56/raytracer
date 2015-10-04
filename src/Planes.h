@@ -5,11 +5,13 @@
 #ifndef RAYTRACER_SHAPES_H
 #define RAYTRACER_SHAPES_H
 
+#include "Definition.h"
 #include "Primitive.h"
 #include "Point.h"
 #include "Vector.h"
+#include "BoundingVolume.h"
 #include <vector>
-#include <math.h>
+#include <cmath>
 
 using namespace std;
 
@@ -27,8 +29,7 @@ public:
         else domiCoord = -1;
     }
 
-    virtual bool isIntesected(RayPtr rayPtr);
-    Point3d calcIntesection(RayPtr rayPtr);
+    virtual Point3d getIntersection(RayPtr rPtr);
     int getDomiCoord() {return domiCoord;}
 
 private:
@@ -52,9 +53,9 @@ public:
             projVertex[i] = vertex[i].projectTo(getDomiCoord());
     }
 
-    bool isIntesected(RayPtr rayPtr);
+    Point3d getIntersection(RayPtr rPtr);
 
-    void buildBoVo();
+    void buildBoundingVolume();
 
     ~Polygon() {
         delete[] vertex;

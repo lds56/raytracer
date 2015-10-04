@@ -4,7 +4,15 @@
 
 #include "Point.h"
 #include "Utils.h"
+#include "Matrix.h"
+#include <vector>
 
+using namespace std;
+
+Point2d::Point2d() {}
+Point2d::Point2d(float u, float v): u(u), v(v) {}
+Point2d::Point2d(Vec2f pos): Point2d(pos[0], pos[1]) {}
+Point2d::Point2d(Vector2d x): Point2d(x.u, x.v) {}
 
 Point2d Point2d::operator=(const Point2d &point) {
     if (this == &point) {
@@ -17,7 +25,7 @@ Point2d Point2d::operator=(const Point2d &point) {
     return *this;
 }
 
-bool operator==(const Point2d &point) {
+bool Point2d::operator==(const Point2d &point) {
     if (u == point.u && v == point.v) return true;
     else return false;
 }
@@ -94,6 +102,12 @@ const Point2d& Point2d::getNullPoint() {
 
 /*----------2-3d----------*/
 
+
+Point3d::Point3d() {}
+Point3d::Point3d(float x, float y, float z): x(x), y(y), z(z) {}
+Point3d::Point3d(Vec3f pos): Point3d(pos[0], pos[1], pos[2]) {}
+Point3d::Point3d(Vector3d v): Point3d(v.x, v.y, v.z) {}
+
 Point3d Point3d::operator=(const Point3d &point) {
     if (this == &point) {
         return *this;
@@ -106,7 +120,7 @@ Point3d Point3d::operator=(const Point3d &point) {
     return *this;
 }
 
-bool operator==(const Point3d &point) {
+bool Point3d::operator==(const Point3d &point) {
     if (x == point.x && y == point.y && z == point.z) return true;
     else return false;
 }
@@ -178,8 +192,22 @@ Point2d Point3d::projectTo(int coord) {
         case 1: return Point2d(y, z);
         case 2: return Point2d(x, z);
         case 3: return Point2d(x, y);
-        default: Utils::logError("Wrong coordinate!");
+        default: {
+            Utils::logError("Wrong coordinate!");
+            exit(1);
+        }
     }
+}
+
+
+vector<float> Point3d::toVector() {
+    return vector<float>{x, y, z};
+}
+
+Matrix<float> Point3d::toMatrix() {
+    vector<vector<float>> v;
+    v.push_back(this->toVector());
+    return Matrix<float>(1, 3, v).transpose();
 }
 
 bool Point3d::isNullPoint() {return this == &Point3d::NullPoint;}
@@ -189,6 +217,8 @@ const Point3d Point3d :: NullPoint = Point3d(233, 233, 233);
 const Point3d& Point3d::getNullPoint() {
     return Point3d::NullPoint;
 }
+
+
 
 // function2d
 
@@ -221,4 +251,12 @@ Point3d Point3d::pointMax(const Point3d &a, const Point3d &b) {
 
 Point3d Point3d::pointMin(const Point3d &a, const Point3d &b) {
     return Point3d(std::min(a.x, b.x), std::min(a.y, b.y), std::min(a.z, b.z));
+}
+
+float Point3d::EuDistance(Point3d &a, Point3d &b) {
+    return (a-b).length();
+}
+
+float Point3d::EuDistanceSqr(Point3d &a, Point3d &b) {
+    return (a-b).lengthSqr();
 }

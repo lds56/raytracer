@@ -6,7 +6,6 @@
 #define RAYTRACER_DEFINITION_H
 
 #include <memory>
-#include "BoundingVolume.h"
 
 using namespace std;
 
@@ -30,6 +29,11 @@ class TriangleMesh;
 class Ray;
 class BoundingVolume;
 
+class Point3d;
+class Point2d;
+class Vector3d;
+class Vector2d;
+
 struct Size {
     Size(int h, int w): height(h), width(w) {}
     int height;
@@ -43,7 +47,7 @@ typedef shared_ptr<AmbientLight> AmbientLightPtr;
 typedef shared_ptr<Material> MaterialPtr;
 typedef shared_ptr<Texture> TexturePtr;
 typedef shared_ptr<Ray> RayPtr;
-typedef shared_ptr<BoundingVolume> BoVoPtr;
+typedef shared_ptr<BoundingVolume> BoundingVolumePtr;
 
 typedef shared_ptr<Primitive> PrimitivePtr;
 typedef shared_ptr<PrimColle> PrimCollePtr;

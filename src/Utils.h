@@ -7,6 +7,7 @@
 
 #include <iostream>
 #include <string>
+#include <vector>
 #include <cmath>
 #include "Definition.h"
 
@@ -43,6 +44,18 @@ public:
     static inline int NSHFunc(float x) {
         return -SHFunc(x);
     }
+
+    template <typename T>
+    static vector<T> concat(vector<T> v1, vector<T> v2);
+
+    template <typename T>
+    static int quickSelect(T* dat, int l, int r, int k);
+
+    template <typename T>
+    static void swap(T* t1, T* t2);
+
+private:
+
 };
 
 #endif //RAYTRACER_UNTILS_H
