@@ -38,6 +38,8 @@ public:
     Point2d operator*=(const float scalar);
     Point2d operator/=(const float scalar);
 
+    float operator()(const int idx);
+
     static float dotProduct(const Point2d &a, const Point2d &b);
     static float dotProduct(const Point2d &a, const Vector2d &b);
     static float dotProduct(const Vector2d &a, const Point2d &b);
@@ -75,6 +77,8 @@ public:
     Point3d operator*=(const float scalar);
     Point3d operator/(const float scalar) const;
     Point3d operator/=(const float scalar);
+
+    float operator()(const int idx);
 
     static float dotProduct(const Point3d &a, const Point3d &b);
     static float dotProduct(const Point3d &a, const Vector3d &b);

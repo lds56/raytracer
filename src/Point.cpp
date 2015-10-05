@@ -92,6 +92,16 @@ Point2d Point2d::operator/=(const float scalar) {
     return *this;
 }
 
+float Point2d::operator()(const int idx) {
+    switch (idx) {
+        case 1: return u;
+        case 2: return v;
+        default:
+            Utils::logError("Undefined coordination index!");
+            exit(1);
+    }
+}
+
 bool Point2d::isNullPoint() {return this == &Point2d::NullPoint;}
 
 const Point2d Point2d::NullPoint = Point2d(233, 233);
@@ -185,6 +195,17 @@ Point3d Point3d::operator/=(const float scalar) {
     z /= scalar;
 
     return *this;
+}
+
+float Point3d::operator()(const int idx) {
+    switch (idx) {
+        case 1: return x;
+        case 2: return y;
+        case 3: return z;
+        default:
+            Utils::logError("Undefined coordination index!");
+            exit(1);
+    }
 }
 
 Point2d Point3d::projectTo(int coord) {

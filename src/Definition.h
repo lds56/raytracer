@@ -55,8 +55,5 @@ typedef shared_ptr<Plane> PlanePtr;
 typedef shared_ptr<Solid> SolidPtr;
 typedef shared_ptr<TriangleMesh> TriangleMeshPtr;
 
-const float BV_EPSILLON = 1.0E-5f;
-const float FLOAT_EPSILLON = 1.0E-5f;
-const float FLOAT_INFINITTY = 1.0E+10f;
 
 #endif //RAYTRACER_DEFINITION_H

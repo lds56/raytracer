@@ -21,6 +21,9 @@ public:
 
     inline Point3d getCentroid() { return (minCorner + maxCorner) * 0.5f; }
 
+    Point3d getMinCorner() {return minCorner;}
+    Point3d getMaxCorner() {return maxCorner;}
+
 private:
     Point3d minCorner, maxCorner;
     static const Vector3d borderVector;

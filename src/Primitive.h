@@ -20,6 +20,8 @@ public:
     void setMaterial(MaterialPtr materialPtr) {this->materialPtr = materialPtr;}
     void setTexture(TexturePtr texturePtr) {this->texturePtr = texturePtr;}
 
+    BoundingVolumePtr getBV() {return bvPtr;}
+
     virtual Point3d getIntersection(RayPtr rPtr);
 
     virtual void buildBoundingVolume();
